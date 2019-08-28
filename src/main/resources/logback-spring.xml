@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+  <property name="LOGS" value="./logs"/>
+  <property name="CHARSET" value="utf8"/>
+
+
+  <springProfile name="console-logging">
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder>
+        <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        <charset>${CHARSET}</charset>
+      </encoder>
+    </appender>
+  </springProfile>
+
+  <springProfile name="file-logging">
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+      <file>${LOGS}/batch-job-server.log</file>
+      <encoder>
+        <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        <charset>${CHARSET}</charset>
+      </encoder>
+
+      <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <fileNamePattern>${LOGS}/archive/batch-job-server-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+        <maxHistory>30</maxHistory>
+        <timeBasedFileNamingAndTriggeringPolicy
+          class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+          <maxFileSize>10MB</maxFileSize>
+        </timeBasedFileNamingAndTriggeringPolicy>
+      </rollingPolicy>
+
+    </appender>
+  </springProfile>
+
+  <root>
+    <level value="INFO"/>
+    <springProfile name="console-logging">
+      <appender-ref ref="console"/>
+    </springProfile>
+
+    <springProfile name="file-logging">
+      <appender-ref ref="file"/>
+    </springProfile>
+  </root>
+</configuration>
